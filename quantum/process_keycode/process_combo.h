@@ -20,9 +20,7 @@
 #include "quantum.h"
 #include <stdint.h>
 
-#ifdef EXTRA_SHORT_COMBOS
-#    define MAX_COMBO_LENGTH 6
-#elif defined(EXTRA_EXTRA_LONG_COMBOS)
+#if defined(EXTRA_EXTRA_LONG_COMBOS)
 #    define MAX_COMBO_LENGTH 32
 #elif defined(EXTRA_LONG_COMBOS)
 #    define MAX_COMBO_LENGTH 16
@@ -40,18 +38,14 @@
 typedef struct {
     const uint16_t *keys;
     uint16_t        keycode;
-#ifdef EXTRA_SHORT_COMBOS
-    uint8_t state;
-#else
-    bool disabled;
-    bool active;
-#    if defined(EXTRA_EXTRA_LONG_COMBOS)
+    bool            disabled : 1;
+    bool            active : 1;
+#if defined(EXTRA_EXTRA_LONG_COMBOS)
     uint32_t state;
-#    elif defined(EXTRA_LONG_COMBOS)
+#elif defined(EXTRA_LONG_COMBOS)
     uint16_t state;
-#    else
+#else
     uint8_t state;
-#    endif
 #endif
 } combo_t;
 

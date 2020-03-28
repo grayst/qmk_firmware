@@ -108,11 +108,11 @@ void action_exec(keyevent_t event) {
 #endif
 
 #ifndef NO_ACTION_TAPPING
-    if (pre_process_record_quantum(&record)) {
+    if (IS_NOEVENT(record.event) || pre_process_record_quantum(&record)) {
         action_tapping_process(record);
     }
 #else
-    if (pre_process_record_quantum(&record)) {
+    if (IS_NOEVENT(record.event) || pre_process_record_quantum(&record)) {
         process_record(&record);
     }
     if (!IS_NOEVENT(record.event)) {
@@ -139,8 +139,7 @@ void process_hand_swap(keyevent_t *event) {
     bool             do_swap = event->pressed ? swap_hands : swap_state[pos.row] & (col_bit);
 
     if (do_swap) {
-        event->key.row = pgm_read_byte(&hand_swap_config[pos.row][pos.col].row);
-        event->key.col = pgm_read_byte(&hand_swap_config[pos.row][pos.col].col);
+        event->key = hand_swap_config[pos.row][pos.col];
         swap_state[pos.row] |= col_bit;
     } else {
         swap_state[pos.row] &= ~(col_bit);
@@ -788,9 +787,10 @@ void register_code(uint8_t code) {
     }
 #endif
 
-    else if IS_KEY (code) {
-        // TODO: should push command_proc out of this block?
-        if (command_proc(code)) return;
+    else if
+        IS_KEY(code) {
+            // TODO: should push command_proc out of this block?
+            if (command_proc(code)) return;
 
 #ifndef NO_ACTION_ONESHOT
 /* TODO: remove
@@ -807,33 +807,35 @@ void register_code(uint8_t code) {
         } else
 */
 #endif
-        {
-            // Force a new key press if the key is already pressed
-            // without this, keys with the same keycode, but different
-            // modifiers will be reported incorrectly, see issue #1708
-            if (is_key_pressed(keyboard_report, code)) {
-                del_key(code);
+            {
+                // Force a new key press if the key is already pressed
+                // without this, keys with the same keycode, but different
+                // modifiers will be reported incorrectly, see issue #1708
+                if (is_key_pressed(keyboard_report, code)) {
+                    del_key(code);
+                    send_keyboard_report();
+                }
+                add_key(code);
                 send_keyboard_report();
             }
-            add_key(code);
+        }
+    else if
+        IS_MOD(code) {
+            add_mods(MOD_BIT(code));
             send_keyboard_report();
         }
-    } else if IS_MOD (code) {
-        add_mods(MOD_BIT(code));
-        send_keyboard_report();
-    }
 #ifdef EXTRAKEY_ENABLE
-    else if IS_SYSTEM (code) {
-        host_system_send(KEYCODE2SYSTEM(code));
-    } else if IS_CONSUMER (code) {
-        host_consumer_send(KEYCODE2CONSUMER(code));
-    }
+    else if
+        IS_SYSTEM(code) { host_system_send(KEYCODE2SYSTEM(code)); }
+    else if
+        IS_CONSUMER(code) { host_consumer_send(KEYCODE2CONSUMER(code)); }
 #endif
 #ifdef MOUSEKEY_ENABLE
-    else if IS_MOUSEKEY (code) {
-        mousekey_on(code);
-        mousekey_send();
-    }
+    else if
+        IS_MOUSEKEY(code) {
+            mousekey_on(code);
+            mousekey_send();
+        }
 #endif
 }
 
@@ -878,22 +880,26 @@ void unregister_code(uint8_t code) {
     }
 #endif
 
-    else if IS_KEY (code) {
-        del_key(code);
-        send_keyboard_report();
-    } else if IS_MOD (code) {
-        del_mods(MOD_BIT(code));
-        send_keyboard_report();
-    } else if IS_SYSTEM (code) {
-        host_system_send(0);
-    } else if IS_CONSUMER (code) {
-        host_consumer_send(0);
-    }
+    else if
+        IS_KEY(code) {
+            del_key(code);
+            send_keyboard_report();
+        }
+    else if
+        IS_MOD(code) {
+            del_mods(MOD_BIT(code));
+            send_keyboard_report();
+        }
+    else if
+        IS_SYSTEM(code) { host_system_send(0); }
+    else if
+        IS_CONSUMER(code) { host_consumer_send(0); }
 #ifdef MOUSEKEY_ENABLE
-    else if IS_MOUSEKEY (code) {
-        mousekey_off(code);
-        mousekey_send();
-    }
+    else if
+        IS_MOUSEKEY(code) {
+            mousekey_off(code);
+            mousekey_send();
+        }
 #endif
 }
 
