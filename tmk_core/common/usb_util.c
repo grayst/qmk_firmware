@@ -13,8 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+<<<<<<< HEAD
 #include "usb_util.h"
 #include "wait.h"
+=======
+#include "quantum.h"
+#include "usb_util.h"
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
 
 __attribute__((weak)) void usb_disable(void) {}
 __attribute__((weak)) bool usb_connected_state(void) { return true; }

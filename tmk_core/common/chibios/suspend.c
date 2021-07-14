@@ -24,6 +24,12 @@
 #    include "rgblight.h"
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef LED_MATRIX_ENABLE
+#    include "led_matrix.h"
+#endif
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
 #ifdef RGB_MATRIX_ENABLE
 #    include "rgb_matrix.h"
 #endif
@@ -57,6 +63,12 @@ void suspend_power_down(void) {
     backlight_set(0);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef LED_MATRIX_ENABLE
+    led_matrix_task();
+#endif
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_task();
 #endif
@@ -76,6 +88,13 @@ void suspend_power_down(void) {
     // also shouldn't power down USB
 #if defined(RGBLIGHT_SLEEP) && defined(RGBLIGHT_ENABLE)
     rgblight_suspend();
+#endif
+
+#if defined(LED_MATRIX_ENABLE)
+    led_matrix_set_suspend_state(true);
+#endif
+#if defined(RGB_MATRIX_ENABLE)
+    rgb_matrix_set_suspend_state(true);
 #endif
 #ifdef AUDIO_ENABLE
     stop_all_notes();
@@ -144,6 +163,13 @@ void suspend_wakeup_init(void) {
     led_set(host_keyboard_leds());
 #if defined(RGBLIGHT_SLEEP) && defined(RGBLIGHT_ENABLE)
     rgblight_wakeup();
+#endif
+
+#if defined(LED_MATRIX_ENABLE)
+    led_matrix_set_suspend_state(false);
+#endif
+#if defined(RGB_MATRIX_ENABLE)
+    rgb_matrix_set_suspend_state(false);
 #endif
     suspend_wakeup_init_kb();
 }

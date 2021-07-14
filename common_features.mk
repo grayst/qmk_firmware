@@ -233,6 +233,10 @@ endif
     SRC += $(QUANTUM_DIR)/process_keycode/process_backlight.c
     SRC += $(QUANTUM_DIR)/led_matrix.c
     SRC += $(QUANTUM_DIR)/led_matrix_drivers.c
+<<<<<<< HEAD
+=======
+    CIE1931_CURVE := yes
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
 
     ifeq ($(strip $(LED_MATRIX_DRIVER)), IS31FL3731)
         OPT_DEFS += -DIS31FL3731 -DSTM32_I2C -DHAL_USE_I2C=TRUE
@@ -349,7 +353,11 @@ endif
 VALID_BACKLIGHT_TYPES := pwm timer software custom
 
 BACKLIGHT_ENABLE ?= no
-BACKLIGHT_DRIVER ?= pwm
+ifeq ($(strip $(CONVERT_TO_PROTON_C)), yes)
+    BACKLIGHT_DRIVER ?= software
+else
+    BACKLIGHT_DRIVER ?= pwm
+endif
 ifeq ($(strip $(BACKLIGHT_ENABLE)), yes)
     ifeq ($(filter $(BACKLIGHT_DRIVER),$(VALID_BACKLIGHT_TYPES)),)
         $(error BACKLIGHT_DRIVER="$(BACKLIGHT_DRIVER)" is not a valid backlight type)
@@ -463,7 +471,11 @@ ifneq ($(strip $(BOOTMAGIC_ENABLE)), no)
   ifeq ($(filter $(BOOTMAGIC_ENABLE),$(VALID_MAGIC_TYPES)),)
     $(error BOOTMAGIC_ENABLE="$(BOOTMAGIC_ENABLE)" is not a valid type of magic)
   endif
+<<<<<<< HEAD
   ifeq ($(strip $(BOOTMAGIC_ENABLE)), lite)
+=======
+  ifneq ($(strip $(BOOTMAGIC_ENABLE)), full)
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
       OPT_DEFS += -DBOOTMAGIC_LITE
       QUANTUM_SRC += $(QUANTUM_DIR)/bootmagic/bootmagic_lite.c
   else

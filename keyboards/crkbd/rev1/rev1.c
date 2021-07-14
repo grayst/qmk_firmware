@@ -83,10 +83,8 @@ led_config_t g_led_config = { {
     4, 4, 4, 4, 4, 4, 4,
     4, 4, 1, 1, 1
 } };
-#endif
 
-void matrix_init_kb(void) {
-
+<<<<<<< HEAD
 #if defined(RGB_MATRIX_ENABLE) && !defined(RGB_MATRIX_SPLIT)
     if (!isLeftHand) {
         g_led_config = (led_config_t){ {
@@ -120,10 +118,15 @@ void matrix_init_kb(void) {
     }
 #endif
     matrix_init_user();
+=======
+void suspend_power_down_kb(void) {
+    rgb_matrix_set_suspend_state(true);
+    suspend_power_down_user();
+>>>>>>> c275828ac20f55a42ca1d1546c330501c00839ab
 }
 
-#ifdef SSD1306OLED
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-  return process_record_gfx(keycode,record) && process_record_user(keycode, record);
+void suspend_wakeup_init_kb(void) {
+    rgb_matrix_set_suspend_state(false);
+    suspend_wakeup_init_user();
 }
 #endif
